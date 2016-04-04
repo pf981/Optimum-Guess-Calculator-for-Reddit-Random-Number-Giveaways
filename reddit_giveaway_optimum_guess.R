@@ -1,4 +1,4 @@
-#**************************************************************************************************
+#***************************************************************************************************
 #
 # TITLE:       Optimum Guess Calculator for Reddit Random Number Giveaways
 #
@@ -13,7 +13,7 @@
 #
 # INPUTS:      This code requires MIN_GUESS, MAX_GUESS and post_url to be specified.
 #
-#**************************************************************************************************
+#***************************************************************************************************
 
 if (!require('pacman'))
     install.packages('pacman')
@@ -110,7 +110,11 @@ end_of_longest_gap <- start_of_longest_gap + longest_false_run_length
 best_guess <- (start_of_longest_gap + end_of_longest_gap - 1) %/% 2
 
 
-message('The best new guess that can be made is ', best_guess, ' which covers ', longest_false_run_length %/% 2, ' numbers.')
+message('The best new guess that can be made is ',
+        best_guess,
+        ' which covers ',
+        longest_false_run_length %/% 2,
+        ' numbers.')
 
 
 
