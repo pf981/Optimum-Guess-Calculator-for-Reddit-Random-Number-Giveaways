@@ -67,7 +67,7 @@ guess_df$is_guessed <- guess_df$number %in% guessed_numbers
 smoothed <- density(guessed_numbers, adjust=0.1) # You may need to tune the adjust parameter
 smoothed <- data.frame(x=smoothed$x, y=smoothed$y)
 
-
+# Plot a 1D density plot
 # The darker sections indicate larger gaps in guesses
 ggplot(smoothed, aes(x=x, y=1, fill=y)) +
     labs(title='Density of Guessed Numbers',
@@ -78,13 +78,14 @@ ggplot(smoothed, aes(x=x, y=1, fill=y)) +
     scale_fill_continuous(name='Density') +
     geom_tile()
 
+# Plot a 2D density plot
 # The lower points indicate larger gaps in guesses
-ggplot(smoothed, aes(x=x, y=y)) +
+ggplot(data.frame(number=guessed_numbers), aes(x=number, fill=1)) +
     labs(title='Density of Guessed Numbers',
          y='Density',
          x='Guessed Number') +
-    xlim(MIN_GUESS, MAX_GUESS) +
-    geom_line()
+    theme(legend.position = "none") +
+    geom_density(adjust=0.1)
 
 
 
