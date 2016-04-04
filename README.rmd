@@ -12,7 +12,7 @@ This code is used to calculate the optimal guess by finding the middle of the bi
 
 
 ### Inputs
-To apply the analysis to any post, simply modify three variables: `MIN_GUESS`, `MIN_GUESS` and `POST_URL`.
+To apply the analysis to any post, simply modify three variables: `MIN_GUESS`, `MAX_GUESS` and `POST_URL`.
 
 ```{r}
 MIN_GUESS <- 0
