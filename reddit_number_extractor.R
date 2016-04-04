@@ -111,10 +111,10 @@ cumsum(run_lengths$lengths)
 start_of_longest_gap <- cumsum(run_lengths$lengths)[longest_false_run_index-1]
 end_of_longest_gap <- start_of_longest_gap + longest_false_run_length
 
-best_guess <- as.integer((start_of_longest_gap + end_of_longest_gap - 1) / 2)
+best_guess <- (start_of_longest_gap + end_of_longest_gap - 1) %/% 2
 
 
-message('Best guess is ', best_guess, ' which covers ', '', ' numbers.')
+message('Best guess is ', best_guess, ' which covers ', longest_false_run_length %/% 2, ' numbers.')
 
 # run_lengths$lengths[run_lengths$values]
 #
