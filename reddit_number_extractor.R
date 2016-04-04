@@ -1,6 +1,6 @@
 #**************************************************************************************************
 #
-# TITLE:       Reddit Number Extractor
+# TITLE:       Optimum Guess Calculator for Reddit Random Number Giveaways
 #
 # DESCRIPTION: Various Reddit giveaway posts involve the poster randomly choosing a number and the
 #              commenter who comments the number closest to this is the winner. See the following
@@ -68,6 +68,7 @@ smoothed <- density(guessed_numbers, adjust=0.1) # You may need to tune the adju
 smoothed <- data.frame(x=smoothed$x, y=smoothed$y)
 
 
+# The darker sections indicate larger gaps in guesses
 ggplot(smoothed, aes(x=x, y=1, fill=y)) +
     labs(title='Density of Guessed Numbers',
          y='',
@@ -76,6 +77,14 @@ ggplot(smoothed, aes(x=x, y=1, fill=y)) +
     xlim(MIN_GUESS, MAX_GUESS) +
     scale_fill_continuous(name='Density') +
     geom_tile()
+
+# The lower points indicate larger gaps in guesses
+ggplot(smoothed, aes(x=x, y=y)) +
+    labs(title='Density of Guessed Numbers',
+         y='Density',
+         x='Guessed Number') +
+    xlim(MIN_GUESS, MAX_GUESS) +
+    geom_line()
 
 
 
