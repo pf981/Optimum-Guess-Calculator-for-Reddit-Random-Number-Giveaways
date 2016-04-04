@@ -9,27 +9,29 @@
 if (!require('pacman'))
     install.packages('pacman')
 
-pacman::p_load('RedditExtractoR',
+pacman::p_load('ggplot2',
+               'RedditExtractoR',
                'tidyr')
-# pacman::p_load('RedditExtractoR',
-#                'tidyr',
-#                'tm')
+# For deeper text mining, use tm package
+
+
+MIN_GUESS <- 0
+MAX_GUESS <- 999
+
+post_url <- 'https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/'
 
 
 
-comment_data <- reddit_content('https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/')
+
+## Extract the comments from Reddit ####
+
+
+comment_data <- reddit_content(post_url)
 
 
 
 
-
-# comments <- comment_data$comment %>%
-#     unlist %>%
-#     gsub('[^0-9]', '', .) %>%
-#     strsplit('') %>%
-#     unlist %>%
-#     as.numeric %>%
-#     unique
+## Extract the Guessed Numbers in the Comments ####
 
 
 guessed_numbers <- comment_data$comment %>%
@@ -41,9 +43,75 @@ guessed_numbers <- comment_data$comment %>%
     unique %>%
     sort
 
+guess_df <- data.frame(number=seq(from=MIN_GUESS, to=MAX_GUESS, by=1))
+guess_df$is_guessed <- guess_df$number %in% guessed_numbers
 
 
-unique(as.numeric(unlist(strsplit(gsub("[^0-9]", "", unlist(ll)), ""))))
+
+
+# smoothed <- density(guessed_numbers, adjust = 1)
+smoothed <- density(guessed_numbers, adjust=0.1)
+smoothed <- data.frame(x=smoothed$x, y=smoothed$y)
+# smoothed <- density(guessed_numbers, adjust = 1) %>%
+#     select(x, y) %>%
+#     data.frame
+
+# smoothed$x
+# smoothed$y
+
+
+ggplot(smoothed, aes(x=x, y=1, fill=y)) +
+    xlim(MIN_GUESS, MAX_GUESS)
+    geom_tile()
+
+
+ggplot(guess_df, aes(x=number, y=1, fill=is_guessed)) + geom_tile()
+
+
+
+
+
+ggplot(guess_df, aes(x=number, y=is_guessed)) +
+    geom_histogram()
+
+
+
+ggplot(guess_df, aes(x=number, y=is_guessed)) +
+    geom_bar(stat='identity')
+
+
+ggplot(guess_df, aes(x=number, y=is_guessed)) +
+    geom_density()
+
+
+
+
+# ggplot(guess_df, aes(x=number, y=is_guessed)) + geom_tile()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
