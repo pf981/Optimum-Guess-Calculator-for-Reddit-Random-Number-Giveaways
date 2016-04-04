@@ -2,7 +2,16 @@
 #
 # TITLE:       Reddit Number Extractor
 #
-# DESCRIPTION:
+# DESCRIPTION: Various Reddit giveaway posts involve the poster randomly choosing a number and the
+#              commenter who comments the number closest to this is the winner. See the following
+#              URL for an example of a giveaway post:
+#                  https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/
+#
+#              This code is used to calculate the optimal guess by finding the middle of the biggest
+#              gap in the guesses. It downloads all the comments, extracts the numbers, plots the
+#              density of guesses and outputs the optimum number to guess.
+#
+# INPUTS:      This code requires MIN_GUESS, MAX_GUESS and post_url to be specified.
 #
 #**************************************************************************************************
 
@@ -14,10 +23,14 @@ pacman::p_load('ggplot2',
                'tidyr')
 
 
+
+
+## Inputs ####
+
+
 MIN_GUESS <- 0
 MAX_GUESS <- 999
-
-post_url <- 'https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/'
+POST_URL <- 'https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/'
 
 
 
@@ -25,7 +38,7 @@ post_url <- 'https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveawa
 ## Extract the comments from Reddit ####
 
 
-comment_data <- reddit_content(post_url)
+comment_data <- reddit_content(POST_URL)
 
 
 
