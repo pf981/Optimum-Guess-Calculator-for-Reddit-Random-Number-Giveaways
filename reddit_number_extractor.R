@@ -61,7 +61,7 @@ smoothed <- data.frame(x=smoothed$x, y=smoothed$y)
 
 
 ggplot(smoothed, aes(x=x, y=1, fill=y)) +
-    xlim(MIN_GUESS, MAX_GUESS)
+    xlim(MIN_GUESS, MAX_GUESS) +
     geom_tile()
 
 
@@ -85,6 +85,7 @@ ggplot(guess_df, aes(x=number, y=is_guessed)) +
 
 
 
+ggplot(guess_df, aes(x=number, y=1, fill=is_guessed)) + geom_density(adjust=0.1)
 
 # ggplot(guess_df, aes(x=number, y=is_guessed)) + geom_tile()
 
