@@ -1,22 +1,114 @@
 ---
-title: "Untitled"
+title: "Optimum Guess Calculator for Reddit Random Number Giveaways"
 author: "Paul Foster"
 date: "5 April 2016"
 output: github_document
 ---
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Overview
+Various Reddit giveaway posts involve the poster randomly choosing a number and the commenter who comments the number closest to this is the winner. See [this post](https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/) for an example of a giveaway post.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+This code is used to calculate the optimal guess by finding the middle of the biggest gap in the guesses. It downloads all the comments, extracts the numbers, plots the density of guesses and outputs the optimum number to guess.
+
+
+### Inputs
+To apply the analysis to any post, simply modify three variables: `MIN_GUESS`, `MIN_GUESS` and `POST_URL`.
 
 ```{r}
-summary(cars)
+MIN_GUESS <- 0
+MAX_GUESS <- 999
+POST_URL <- 'https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/'
 ```
 
-You can also embed plots, for example:
 
-```{r, echo=FALSE}
-plot(cars)
+### Outputs
+<!-- Generate the smoothed data -->
+```{r, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+if (!require('pacman'))
+    install.packages('pacman')
+
+pacman::p_load('ggplot2',
+               'RedditExtractoR',
+               'tidyr')
+
+comment_data <- reddit_content(POST_URL)
+
+guessed_numbers <- comment_data$comment %>%
+    unlist %>%
+    strsplit('[^0-9]+') %>%
+    unlist %>%
+    as.numeric %>%
+    na.omit %>%
+    unique %>%
+    sort
+
+smoothed <- density(guessed_numbers, adjust=0.1)
+smoothed <- data.frame(x=smoothed$x, y=smoothed$y)
+
+guess_df <- data.frame(number=seq(from=MIN_GUESS, to=MAX_GUESS, by=1))
+guess_df$is_guessed <- guess_df$number %in% guessed_numbers
+
+run_lengths <- rle(guess_df$is_guessed) %>%
+    unclass %>%
+    data.frame
+
+only_false_lengths <- ifelse(!run_lengths$values, run_lengths$lengths, 0)
+longest_false_run_index <- which.max(only_false_lengths)
+longest_false_run_length <- only_false_lengths[longest_false_run_index]
+
+start_of_longest_gap <- cumsum(run_lengths$lengths)[longest_false_run_index-1]
+end_of_longest_gap <- start_of_longest_gap + longest_false_run_length
+
+best_guess <- (start_of_longest_gap + end_of_longest_gap - 1) %/% 2
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+#### 1D Density Plot of the Guessed Numbers 
+Darker sections indicate larger gaps in guesses.
+
+```{r echo=FALSE, warning=FALSE}
+ggplot(smoothed, aes(x=x, y=1, fill=y)) +
+    labs(title='Density of Guessed Numbers',
+         y='',
+         x='Guessed Number') +
+    theme(axis.ticks=element_blank(), axis.text.y=element_blank()) +
+    xlim(MIN_GUESS, MAX_GUESS) +
+    scale_fill_continuous(name='Density') +
+    geom_tile()
+```
+
+
+#### 2D Density Plot of the Guessed Numbers 
+Lower points indicate larger gaps in guesses.
+```{r echo=FALSE, warning=FALSE}
+ggplot(data.frame(number=guessed_numbers), aes(x=number, fill=1)) +
+    labs(title='Density of Guessed Numbers',
+         y='Density',
+         x='Guessed Number') +
+    theme(legend.position = "none") +
+    geom_density(adjust=0.1)
+```
+
+#### Optimal Number to Guess
+
+```{r echo=FALSE}
+message('The best new guess that can be made is ',
+        best_guess,
+        ' which covers ',
+        longest_false_run_length %/% 2,
+        ' numbers.')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

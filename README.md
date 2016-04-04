@@ -1,26 +1,37 @@
-Untitled
+Optimum Guess Calculator for Reddit Random Number Giveaways
 ================
 Paul Foster
 5 April 2016
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Overview
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Various Reddit giveaway posts involve the poster randomly choosing a number and the commenter who comments the number closest to this is the winner. See [this post](https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/) for an example of a giveaway post.
+
+This code is used to calculate the optimal guess by finding the middle of the biggest gap in the guesses. It downloads all the comments, extracts the numbers, plots the density of guesses and outputs the optimum number to guess.
+
+### Inputs
+
+To apply the analysis to any post, simply modify three variables: `MIN_GUESS`, `MIN_GUESS` and `POST_URL`.
 
 ``` r
-summary(cars)
+MIN_GUESS <- 0
+MAX_GUESS <- 999
+POST_URL <- 'https://www.reddit.com/r/RandomActsOfGaming/comments/4d65cb/giveaway_south_park_the_stick_of_truth_steam_key/'
 ```
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+### Outputs
 
-You can also embed plots, for example:
+<!-- Generate the smoothed data -->
+#### 1D Density Plot of the Guessed Numbers
 
-![](README_files/figure-markdown_github/unnamed-chunk-2-1.png)<!-- -->
+Darker sections indicate larger gaps in guesses.
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)<!-- -->
+
+#### 2D Density Plot of the Guessed Numbers
+
+Lower points indicate larger gaps in guesses. ![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)<!-- -->
+
+#### Optimal Number to Guess
+
+    ## The best new guess that can be made is 976 which covers 12 numbers.
